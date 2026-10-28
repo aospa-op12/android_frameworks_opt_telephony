@@ -304,6 +304,27 @@ public class MultiSimSettingControllerTest extends TelephonyTest {
     }
 
     @Test
+    @SmallTest
+    public void testDefaultsAreNotClearedDuringShutdown() throws Exception {
+        mMultiSimSettingControllerUT.notifyAllSubscriptionLoaded();
+        sendCarrierConfigChanged(0, 1);
+        sendCarrierConfigChanged(1, 2);
+        processAllMessages();
+
+        clearInvocations(mSubscriptionManagerService);
+        markSubscriptionInactive(1);
+        markSubscriptionInactive(2);
+        doReturn(true).when(mSubscriptionManagerService).isDeviceShuttingDown();
+
+        mMultiSimSettingControllerUT.notifySubscriptionInfoChanged();
+        processAllMessages();
+
+        verify(mSubscriptionManagerService, never()).setDefaultDataSubId(anyInt());
+        verify(mSubscriptionManagerService, never()).setDefaultVoiceSubId(anyInt());
+        verify(mSubscriptionManagerService, never()).setDefaultSmsSubId(anyInt());
+    }
+
+    @Test
     public void testSubInfoChangeAfterRadioUnavailable() throws Exception {
         int phone1SubId = 1;
         int phone2SubId = 2;

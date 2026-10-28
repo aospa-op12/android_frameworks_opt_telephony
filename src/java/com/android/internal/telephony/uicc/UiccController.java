@@ -1736,7 +1736,16 @@ public class UiccController extends Handler {
         return (index >= 0 && index < mUiccSlots.length);
     }
 
-    private boolean isShuttingDown() {
+    boolean isShuttingDown() {
+        // The per-phone flag is cleared on RADIO_UNAVAILABLE, but SIM status responses may still
+        // arrive afterward during shutdown.
+        SubscriptionManagerService subscriptionManagerService =
+                SubscriptionManagerService.getInstance();
+        if (subscriptionManagerService != null
+                && subscriptionManagerService.isDeviceShuttingDown()) {
+            return true;
+        }
+
         for (int i = 0; i < mTelephonyManager.getActiveModemCount(); i++) {
             if (PhoneFactory.getPhone(i) != null &&
                     PhoneFactory.getPhone(i).isShuttingDown()) {

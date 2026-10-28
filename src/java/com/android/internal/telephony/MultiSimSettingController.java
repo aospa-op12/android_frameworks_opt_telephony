@@ -627,6 +627,10 @@ public class MultiSimSettingController extends Handler {
      *
      */
     protected void updateDefaults() {
+        if (mSubscriptionManagerService.isDeviceShuttingDown()) {
+            if (DBG) log("updateDefaults: Device is shutting down. Skip updating defaults.");
+            return;
+        }
         if (DBG) log("updateDefaults");
         if (!isReadyToReevaluate()) return;
 

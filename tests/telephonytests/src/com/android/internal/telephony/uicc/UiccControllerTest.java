@@ -199,6 +199,16 @@ public class UiccControllerTest extends TelephonyTest {
         assertEquals(TelephonyManager.RADIO_POWER_UNAVAILABLE, mSimulatedCommands.getRadioState());
     }
 
+    @Test
+    @SmallTest
+    public void testIsShuttingDownUsesSubscriptionManagerServiceState() {
+        doReturn(true).when(mSubscriptionManagerService).isDeviceShuttingDown();
+        assertTrue(mUiccControllerUT.isShuttingDown());
+
+        doReturn(false).when(mSubscriptionManagerService).isDeviceShuttingDown();
+        assertFalse(mUiccControllerUT.isShuttingDown());
+    }
+
     @Test @SmallTest
     public void testPowerOn() {
         mSimulatedCommands.setRadioPower(true, null);

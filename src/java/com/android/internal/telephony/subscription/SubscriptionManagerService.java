@@ -2047,6 +2047,11 @@ public class SubscriptionManagerService extends ISub.Stub {
         mIsDeviceShuttingDown = isShuttingDown;
     }
 
+    /** @return {@code true} while the device shutdown sequence is in progress. */
+    public boolean isDeviceShuttingDown() {
+        return mIsDeviceShuttingDown;
+    }
+
     /**
      * Calculate the usage setting based on the carrier request.
      *
